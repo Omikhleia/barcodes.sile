@@ -1,4 +1,4 @@
-# ptable.sile
+# barcodes.sile
 
 [![license](https://img.shields.io/github/license/Omikhleia/ptable.sile)](LICENSE)
 
@@ -9,6 +9,10 @@ It currently provides the `barcodes.ean13` package, which allows printing out an
 barcode, suitable for an ISBN (or ISSN, etc.)
 
 ![EAN-13 barcodes](ean13.png "ISBN examples")
+
+The “human readable interpretation” in this example uses the “Hack” font. Any other
+monospace font may be used, and a better result is obtained with an OCR-B font.
+A good recommendation is [Matthew Skala's “OCR B” version](https://tsukurimashou.osdn.jp/ocr.php.en).
 
 ## Installation
 
@@ -22,5 +26,5 @@ To install the latest development version, you may use the provided “rockspec�
 luarocks --lua-version 5.4  install https://raw.githubusercontent.com/Omikhleia/barcodes.sile/main/barcodes.sile-dev-1.rockspec
 ```
 
-(Adapt to you version of Lua, if need be, and refer to the SILE manual for more
-detailed installation information.)
+(Adapt to your version of Lua, if need be, and refer to the SILE manual for more
+detailed 3rd-party package installation information.)

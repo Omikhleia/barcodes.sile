@@ -5,11 +5,12 @@ source = {
     tag = "master"
 }
 description = {
-   summary = "Blah.",
+   summary = "Barcodes package for the SILE typesetting system.",
    detailed = [[
-     Blah
+     This package for the SILE typesetter allows printing out an EAN-13 barcode
+     suitable for an ISBN (or ISSN, etc.)
    ]],
-   homepage = "https://github.com/Omikhleia/vbarcodes.sile",
+   homepage = "https://github.com/Omikhleia/barcodes.sile",
    license = "MIT",
 }
 dependencies = {

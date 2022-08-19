@@ -23,7 +23,7 @@ Installation relies on the **luarocks** package manager.
 To install the latest development version, you may use the provided “rockspec”:
 
 ```
-luarocks --lua-version 5.4 install https://raw.githubusercontent.com/Omikhleia/barcodes.sile/main/barcodes.sile-dev-1.rockspec
+luarocks --lua-version 5.4 install --server=https://luarocks.org/dev barcodes.sile
 ```
 
 (Adapt to your version of Lua, if need be, and refer to the SILE manual for more

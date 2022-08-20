@@ -1,6 +1,8 @@
 # barcodes.sile
 
 [![license](https://img.shields.io/github/license/Omikhleia/barcodes.sile)](LICENSE)
+https://img.shields.io/luarocks/v/Omikhleia/ptable.sile?label=Luarocks&logo=Lua
+[![Luarocks](https://img.shields.io/luarocks/v/Omikhleia/barcodes.sile?label=Luarocks&logo=Lua)](https://luarocks.org/modules/Omikhleia/barcodes.sile)
 
 This package set for the [SILE](https://github.com/sile-typesetter/sile) typesetting
 system aims at providing barcode support.

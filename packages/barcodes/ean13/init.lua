@@ -1,7 +1,7 @@
 --
 -- EAN-13 barcodes for SILE.
--- Didier Willis, 2022.
--- License: MIT
+--
+-- License: MIT (c) 2022 Omikhleia
 --
 local base = require("packages.base")
 

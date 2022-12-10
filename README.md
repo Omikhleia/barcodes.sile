@@ -16,6 +16,8 @@ The “human readable interpretation” in this example uses the “Hack” font
 monospace font may be used, and a better result is obtained with an OCR-B font.
 A good recommendation is [Matthew Skala's “OCR B” version](https://tsukurimashou.osdn.jp/ocr.php.en).
 
+On a slightly related topic, you might also be interested in the [qrcode.sile](https://github.com/Omikhleia/qrcode.sile) package set.
+
 ## Installation
 
 These packages require SILE v0.14 or upper.
@@ -30,3 +32,8 @@ luarocks --lua-version 5.4 install --server=https://luarocks.org/dev barcodes.si
 
 (Adapt to your version of Lua, if need be, and refer to the SILE manual for more
 detailed 3rd-party package installation information.)
+
+## License
+
+All SILE-related code and samples in this repository are released under the MIT license,
+(c) 2022 Omikhleia.

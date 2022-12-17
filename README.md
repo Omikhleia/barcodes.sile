@@ -1,7 +1,7 @@
 # barcodes.sile
 
-[![license](https://img.shields.io/github/license/Omikhleia/barcodes.sile)](LICENSE)
-[![Luacheck](https://img.shields.io/github/workflow/status/Omikhleia/barcodes.sile/Luacheck?label=Luacheck&logo=Lua)](https://github.com/Omikhleia/barcodes.sile/actions?workflow=Luacheck)
+[![license](https://img.shields.io/github/license/Omikhleia/barcodes.sile?label=License)](LICENSE)
+[![Luacheck](https://img.shields.io/github/actions/workflow/status/Omikhleia/barcodes.sile/luacheck.yml?branch=main&label=Luacheck&logo=Lua)](https://github.com/Omikhleia/barcodes.sile/actions?workflow=Luacheck)
 [![Luarocks](https://img.shields.io/luarocks/v/Omikhleia/barcodes.sile?label=Luarocks&logo=Lua)](https://luarocks.org/modules/Omikhleia/barcodes.sile)
 
 This package set for the [SILE](https://github.com/sile-typesetter/sile) typesetting

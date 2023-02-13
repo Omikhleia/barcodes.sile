@@ -1,7 +1,7 @@
 package = "barcodes.sile"
 version = "dev-1"
 source = {
-  url = "git://github.com/Omikhleia/barcodes.sile.git",
+  url = "git+https://github.com/Omikhleia/barcodes.sile.git",
 }
 description = {
   summary = "Barcodes package for the SILE typesetting system.",

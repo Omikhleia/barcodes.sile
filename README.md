@@ -12,9 +12,10 @@ barcode, suitable for an ISBN (or ISSN, etc.)
 
 ![EAN-13 barcodes](ean13.png "ISBN examples")
 
-The “human readable interpretation” in this example uses the “Hack” font. Any other
-monospace font may be used, and a better result is obtained with an OCR-B font.
-A good recommendation is [Matthew Skala's “OCR B” version](https://tsukurimashou.osdn.jp/ocr.php.en).
+The “human readable interpretation” in this example uses the “Hack” font.
+Any other monospace font may be used, and a better result is obtained with an OCR-B font.
+A good recommendation is [Matthew Skala's “OCR B” version](https://tsukurimashou.osdn.jp/ocr.php.en),
+which is considered public domain and is included in this package for mere convenience, see [details](packages/barcodes/ean13/fonts/README.md).
 
 On a slightly related topic, you might also be interested in the [qrcode.sile](https://github.com/Omikhleia/qrcode.sile) package set.
 
@@ -44,4 +45,4 @@ of classes and packages.
 ## License
 
 All SILE-related code and samples in this repository are released under the MIT license,
-(c) 2022 Omikhleia.
+(c) 2022-2024 Omikhleia.

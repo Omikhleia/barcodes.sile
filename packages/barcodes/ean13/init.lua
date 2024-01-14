@@ -1,7 +1,8 @@
 --
 -- EAN-13 barcodes for SILE.
 --
--- License: MIT (c) 2022 Omikhleia
+-- 2022-2023 Omikhleia / Didier Willis
+-- License: MIT
 --
 local base = require("packages.base")
 
@@ -167,6 +168,12 @@ if not SILE.scratch.ean13 then
   setupHumanReadableFont("OCR B")
 end
 
+local function hbox (content)
+  local h = SILE.typesetter:makeHbox(content)
+  SILE.typesetter:pushHbox(h)
+  return h
+end
+
 function package:_init (_)
   base._init(self)
   self.class:loadPackage("raiselower")
@@ -197,7 +204,7 @@ function package:registerCommands ()
 
     SILE.call("kern", { width = 11 * X }) -- Left Quiet Zone = minimal 11X
 
-    local hb = SILE.call("hbox", {}, function ()
+    local hb = hbox(function ()
       for i = 1, #pattern do
         local sz = tonumber(pattern:sub(i,i)) * X
         if i % 2 == 0 then
@@ -226,14 +233,14 @@ function package:registerCommands ()
           -- So we get back to the start of the barcode.
             SILE.call("kern", { width = -106 * X })
             -- First digit, at the start of the Left Quiet Zone
-            local h = SILE.call("hbox", {}, { code:sub(1,1) })
+            local h = hbox({ code:sub(1,1) })
             h.width = SILE.length()
             -- First 6-digit sequence is at 11X LQZ + 3X guard = 14X
             -- We add a 0.5X displacement from the normal guard (a bar)
             -- while the central bar starts with a space).
             SILE.call("kern", { width = 14.5 * X })
             SILE.call("kern", { width = deltaFontWidth * X })
-            h = SILE.call("hbox", {}, { code:sub(2,7) }) -- first sequence
+            h = hbox({ code:sub(2,7) }) -- first sequence
             h.width = SILE.length()
             -- Second 6-digit sequence is further at 6*7X digits + 5X guard = 47X
             -- to which we remove the previous 0.5X displacement.
@@ -241,7 +248,7 @@ function package:registerCommands ()
             -- (a space) so as to end at 0.5X from the ending guard (a bar),
             -- hence 46X...
             SILE.call("kern", { width = 46 * X })
-            h = SILE.call("hbox", {}, { code:sub(8,13) }) -- last sequence
+            h = hbox({ code:sub(8,13) }) -- last sequence
             h.width = SILE.length()
             SILE.call("kern", { width = -deltaFontWidth * X })
             -- End marker is at 6*7X + 3X guard + 7X RQZ = 52X
@@ -249,7 +256,7 @@ function package:registerCommands ()
             local l = SILE.length((52.5 - SILE.scratch.ean13.font.width) * X)
             SILE.call("kern", { width = l })
             if not addon then
-              h = SILE.call("hbox", {}, { ">" }) -- closing bracket, aligned to the end of the Right Quiet Zone
+              h = hbox({ ">" }) -- closing bracket, aligned to the end of the Right Quiet Zone
               h.width = SILE.length()
             end
             SILE.call("kern", { width = (SILE.scratch.ean13.font.width - 7) * X  })
@@ -301,7 +308,7 @@ function package:registerCommands ()
     -- addon is specified as 7-12X (i.e. including the main code 7X Right Quiet Zone).
     -- To be safer, we go for the 12X variant. It also looks better, IMHO.
 
-    local hb = SILE.call("hbox", {}, function ()
+    local hb = hbox(function ()
       for i = 1, #pattern do
         local sz = tonumber(pattern:sub(i,i)) * X
         if i % 2 == 0 then
@@ -322,13 +329,13 @@ function package:registerCommands ()
                                                                    -- but it looks much better with a full 1X.
             SILE.call("kern", { width = -9 * #code * X })
             for i = 1, #code do
-              local h = SILE.call("hbox", {}, { code:sub(i,i) }) -- Distribute the digits
+              local h = hbox({ code:sub(i,i) }) -- Distribute the digits
               h.width = SILE.length()
               SILE.call("kern", { width = 9 * X })
             end
             local l = SILE.length((5 - SILE.scratch.ean13.font.width) * X)
             SILE.call("kern", { width = l })
-            local h = SILE.call("hbox", {}, { ">" }) -- closing bracket, aligned to the end of the Add-ons Right Quiet Zone
+            local h = hbox({ ">" }) -- closing bracket, aligned to the end of the Add-ons Right Quiet Zone
             h.width = SILE.length()
             SILE.call("kern", { width = (SILE.scratch.ean13.font.width - 5) * X  })
           end)

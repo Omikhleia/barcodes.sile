@@ -16,7 +16,7 @@ A regular ISBN.
 \end{center}
 
 \medskip
-An ISBN with supplemental part (“add-on”).
+An ISBN with supplemental 5-digit part (“add-on”).
 
 \smallskip
 \begin{center}
@@ -24,6 +24,11 @@ An ISBN with supplemental part (“add-on”).
 \end{center}
 
 \medskip
-(Both the 5-digit and 2-digit add-ons are supported.)
+An ISBN with supplemental 2-digit part (“add-on”).
+
+\smallskip
+\begin{center}
+\ean13[code=978-2-9539896-6-3, addon=12]
+\end{center}
 
 \end{document}

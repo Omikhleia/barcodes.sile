@@ -32,7 +32,7 @@ local ADDON_DELINEATOR = "11"
 -- Selection table for encoding the EAN-13 main part.
 local tableCode = { "AAAAAA", "AABABB", "AABBAB", "AABBBA", "ABAABB", "ABBAAB", "ABBBAA", "ABABAB", "ABABBA", "ABBABA" }
 
--- Selection table for encoding the EAN-13 add-on (supplement) part.
+-- Selection table for encoding the EAN-13 add-on (supplemental) part.
 local tableAddOn2 = { "AA", "AB", "BA", "BB" }
 local tableAddOn5 = { "BBAAA", "BABAA", "BAABA", "BAAAB", "ABBAA", "AABBA", "AAABB", "ABABA", "ABAAB", "AABAB" }
 
@@ -100,7 +100,7 @@ end
 local function ean13addOn2 (text)
   if type(text) ~= "string" or #text ~= 2 then SU.error("Invalid EAN-13 2-digit add-on '"..text.."'") end
 
-  -- The 4-modulus of the numeric value determines how table A and B are used.
+  -- The 4-modulus of the numeric value determines how tables A and B are used.
   local V = tonumber(text)
   local selector = tableAddOn2[V % 4 + 1]
 
@@ -120,7 +120,7 @@ end
 local function ean13addOn5 (text)
   if type(text) ~= "string" or #text ~= 5 then SU.error("Invalid EAN-13 5-digit add-on '"..text.."'") end
 
-  -- The unit's position in V dertermines how table A and B are used.
+  -- The unit's position in V dertermines how tables A and B are used.
   -- V being defined as 3 times the sum of odd-position chars + 9 times the sum of even-position chars.
   local V = (tonumber(text:sub(1,1)) + tonumber(text:sub(3,3)) + tonumber(text:sub(5,5))) * 3
               + (tonumber(text:sub(2,2)) + tonumber(text:sub(4,4))) * 9
@@ -140,10 +140,10 @@ local function ean13addOn5 (text)
   return pattern
 end
 
-local function setupHumanReadableFont (family)
-  SILE.scratch.ean13.font.family = family
-
-  SILE.call("font", { family = SILE.scratch.ean13.font.family, size = 10 }, function ()
+local function setupHumanReadableFont (options)
+  SILE.scratch.ean13.font = { family = options.family, filename = options.filename }
+  options.size = 10
+  SILE.call("font", options, function ()
     local c = SILE.shaper:measureChar("0") -- Here we assume a monospace font...
     -- The recommended typeface for the human readable interpretation is OCR-B
     -- at a height of 2.75mm at standard X, i.e. approx. 8.3333X.
@@ -158,14 +158,18 @@ local function setupHumanReadableFont (family)
     local rh = c.height / maxHRatio -- height ratio to 7.8333
     local rw = c.width / 7 -- width ratio to 7
     local ratio = (rh < rw) and maxHRatio * rh / rw or maxHRatio
-    SILE.scratch.ean13.font.size = 10 * ratio / c.height
-    SILE.scratch.ean13.font.width = c.width / 10 * SILE.scratch.ean13.font.size
+    local size = 10 * ratio / c.height
+    local width = c.width / 10 * size
+    SILE.scratch.ean13.computed = {
+      size = size,
+      width = width,
+    }
   end)
 end
 
 if not SILE.scratch.ean13 then
-  SILE.scratch.ean13 = { font = {} }
-  setupHumanReadableFont("OCR B")
+  SILE.scratch.ean13 = {}
+  setupHumanReadableFont({ family = "OCR B" })
 end
 
 local function hbox (content)
@@ -178,7 +182,6 @@ function package:_init (_)
   base._init(self)
   self.class:loadPackage("raiselower")
   self.class:loadPackage("rules")
-  SILE.call("ean13:font", { family = "OCR B" })
 end
 
 function package:registerCommands ()
@@ -225,9 +228,11 @@ function package:registerCommands ()
                                                 -- the same.
       if SU.boolean(options.showdigits, true) then
         -- N.B. Option showdigits undocumented (just used for testing)
-        local deltaFontWidth = (7 - SILE.scratch.ean13.font.width) * 3 -- 6 digits measuring at most 7X:
+        local deltaFontWidth = (7 - SILE.scratch.ean13.computed.width) * 3 -- 6 digits measuring at most 7X:
                                                                        -- we'll distribute the extra space evenly.
-        SILE.call("font", { family = SILE.scratch.ean13.font.family, size = SILE.scratch.ean13.font.size * X }, function ()
+        SILE.call("font", { family = SILE.scratch.ean13.font.family,
+                            filename = SILE.scratch.ean13.font.filename,
+                            size = SILE.scratch.ean13.computed.size * X }, function ()
           SILE.call("lower", { height = 8.3333 * X }, function ()
           -- 106X = 11X LQZ + 3X guard + 6*7X digits + 5X guard + 6*7X digits + 3X guard
           -- So we get back to the start of the barcode.
@@ -253,13 +258,13 @@ function package:registerCommands ()
             SILE.call("kern", { width = -deltaFontWidth * X })
             -- End marker is at 6*7X + 3X guard + 7X RQZ = 52X
             -- Corrected by the above displacement, hence 52.5X
-            local l = SILE.length((52.5 - SILE.scratch.ean13.font.width) * X)
+            local l = SILE.length((52.5 - SILE.scratch.ean13.computed.width) * X)
             SILE.call("kern", { width = l })
             if not addon then
               h = hbox({ ">" }) -- closing bracket, aligned to the end of the Right Quiet Zone
               h.width = SILE.length()
             end
-            SILE.call("kern", { width = (SILE.scratch.ean13.font.width - 7) * X  })
+            SILE.call("kern", { width = (SILE.scratch.ean13.computed.width - 7) * X  })
           end)
         end)
       end
@@ -303,7 +308,7 @@ function package:registerCommands ()
       SU.error("Invalid EAN-13 add-on length in '"..code.."' (expecting a 2-digit or 5-digit code)")
     end
 
-    SILE.call("kern", { width = 5 * X }) -- Add-ons Left Quiet Zone = optional 5X
+    SILE.call("kern", { width = 5 * X }) -- Add-on Left Quiet Zone = optional 5X
     -- N.B. Optional in the standard, so the spacing between the main part and the
     -- addon is specified as 7-12X (i.e. including the main code 7X Right Quiet Zone).
     -- To be safer, we go for the 12X variant. It also looks better, IMHO.
@@ -324,7 +329,9 @@ function package:registerCommands ()
                                                 -- the same.
       if SU.boolean(options.showdigits, true) then
         -- N.B. Option showdigits undocumented (just used for testing)
-        SILE.call("font", { family = SILE.scratch.ean13.font.family, size = SILE.scratch.ean13.font.size * X }, function ()
+        SILE.call("font", { family = SILE.scratch.ean13.font.family,
+                            filename = SILE.scratch.ean13.font.filename,
+                            size = SILE.scratch.ean13.computed.size * X }, function ()
           SILE.call("raise", { height = (H - 4) * X }, function () -- 0.5X minimum between character and bars,
                                                                    -- but it looks much better with a full 1X.
             SILE.call("kern", { width = -9 * #code * X })
@@ -333,11 +340,11 @@ function package:registerCommands ()
               h.width = SILE.length()
               SILE.call("kern", { width = 9 * X })
             end
-            local l = SILE.length((5 - SILE.scratch.ean13.font.width) * X)
+            local l = SILE.length((5 - SILE.scratch.ean13.computed.width) * X)
             SILE.call("kern", { width = l })
-            local h = hbox({ ">" }) -- closing bracket, aligned to the end of the Add-ons Right Quiet Zone
+            local h = hbox({ ">" }) -- closing bracket, aligned to the end of the Add-on Right Quiet Zone
             h.width = SILE.length()
-            SILE.call("kern", { width = (SILE.scratch.ean13.font.width - 5) * X  })
+            SILE.call("kern", { width = (SILE.scratch.ean13.computed.width - 5) * X  })
           end)
         end)
       end
@@ -347,13 +354,18 @@ function package:registerCommands ()
     -- add-on's human representation, since that one goes on top.
     hb.height = hb.height + 8.3333 * X
 
-    SILE.call("kern", { width = 5 * X }) -- Add-ons Right Quiet Zone = minimal 5X
+    SILE.call("kern", { width = 5 * X }) -- Add-on Right Quiet Zone = minimal 5X
   end, "Typesets an EAN-13 5-digit add-on barcode.")
 
   self:registerCommand("ean13:font", function (options, _)
-    local family = SU.required(options, "family", "Monospace font for EAN barcodes")
-
-    setupHumanReadableFont(family)
+    local family = options.family
+    local filename = options.filename
+    if not family and not filename then
+      SU.error("Required family or filename option to set a monospace font for EAN barcodes")
+    end
+    -- If both are passed, we do not care:
+    -- The font command will do its things as usual.
+    setupHumanReadableFont({ family = family, filename = filename })
   end, "Sets the font for the human readable interpretation in EAN-13 barcode")
 end
 
@@ -380,14 +392,11 @@ bar correction value used here is suitable for offset process technology. You ca
 disable that offset correction by specifying the \autodoc:parameter{correction=false}
 option.
 
-The human readable interpretation below the barcode expects the font to be OCR-B. A free
-implementation of this font is Matthew Skala’s July 2021 version,
-at \url{https://tsukurimashou.osdn.jp/ocr.php.en}, recommended for use with this package.
-The \autodoc:command{\ean13:font[family=<family>]} command allows setting the font
-family used for the human readable interpretation, would the above be unavalaible to you
-or another choice be preferred. Obviously, a monospace font is strongly advised.
-The package does its best for decently sizing and positioning the text, but your mileage
-may vary depending on the chosen font.
+The human readable interpretation below the barcode expects the font to be OCR-B.
+A free public domain implementation of this font is Matthew Skala’s July 2021 version, at \url{https://tsukurimashou.osdn.jp/ocr.php.en}, recommended for use with this package.
+The \autodoc:command{\ean13:font[family=<family>]} (or \autodoc:command{\ean13:font[filename=<filename>]}) command allows setting the font family (or file name), would another choice be preferred.
+Obviously, a monospace font is strongly advised.
+The package does its best for decently sizing and positioning the text, but your mileage may vary depending on the chosen font.
 
 Here is this package in action \ean13[code=9782953989663, scale=SC0] at scale SC0…
 

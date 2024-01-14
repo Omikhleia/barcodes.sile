@@ -45,4 +45,4 @@ of classes and packages.
 ## License
 
 All SILE-related code and samples in this repository are released under the MIT license,
-(c) 2022-2023 Omikhleia.
+(c) 2022-2024 Omikhleia.

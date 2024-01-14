@@ -3,7 +3,6 @@
 \nofolios
 \use[module=packages.barcodes.ean13]
 \font[family=Libertinus Serif, size=10]
-\ean13:font[family=Hack]
 
 \center{\font[weight=700, size=12]{EAN-13 barcodes}}
 

@@ -167,9 +167,19 @@ local function setupHumanReadableFont (options)
   end)
 end
 
+-- Trick for ensuring we search resources from the folder containing the package,
+-- wherever installed: get the debug location of a function just defined in
+-- the current file, remove the initial @  and retrieve the dirname.
+local function basepath ()
+  return pl.path.dirname(debug.getinfo(basepath, "S").source:sub(2))
+end
+
 if not SILE.scratch.ean13 then
   SILE.scratch.ean13 = {}
-  setupHumanReadableFont({ family = "OCR B" })
+  local dirname = basepath()
+  local filename = pl.path.join(dirname, "fonts", "OCRB.otf")
+  SU.debug("barcodes.ean13", "OCRB font is", filename)
+  setupHumanReadableFont({ filename = filename })
 end
 
 local function hbox (content)
@@ -372,7 +382,6 @@ end
 package.documentation = [[
 \begin{document}
 \use[module=packages.barcodes.ean13]
-\ean13:font[family=Hack]% Not the best effect, but avoids hasardous substitutions when OCR B is not installed
 The \autodoc:package{barcodes.ean13} package allows to print out an EAN-13 barcode, suitable
 for an ISBN (or ISSN, etc.)
 
@@ -394,6 +403,7 @@ option.
 
 The human readable interpretation below the barcode expects the font to be OCR-B.
 A free public domain implementation of this font is Matthew Skala’s July 2021 version, at \url{https://tsukurimashou.osdn.jp/ocr.php.en}, recommended for use with this package.
+The font is included in the package, for convenience, and is loaded automatically.
 The \autodoc:command{\ean13:font[family=<family>]} (or \autodoc:command{\ean13:font[filename=<filename>]}) command allows setting the font family (or file name), would another choice be preferred.
 Obviously, a monospace font is strongly advised.
 The package does its best for decently sizing and positioning the text, but your mileage may vary depending on the chosen font.

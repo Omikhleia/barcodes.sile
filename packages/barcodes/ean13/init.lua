@@ -4,6 +4,8 @@
 -- 2022-2024 Omikhleia / Didier Willis
 -- License: MIT
 --
+require("silex.types") -- Compatibility shims
+
 local base = require("packages.base")
 
 local package = pl.class(base)
@@ -209,9 +211,9 @@ function package:registerCommands ()
     local module = SC[scale]
     if not module then SU.error("Invalid EAN scale (SC0 to SC9): "..scale) end
 
-    local X = SILE.length(module.."mm")
+    local X = SILE.types.length(module.."mm")
     local H = 69.242424242 -- As per the standard, a minimal 22.85mm at standard X
-    local offsetcorr = corr and SILE.length("0.020mm") or SILE.length()
+    local offsetcorr = corr and SILE.types.length("0.020mm") or SILE.types.length()
 
     local pattern = ean13(code)
 
@@ -249,14 +251,14 @@ function package:registerCommands ()
             SILE.call("kern", { width = -106 * X })
             -- First digit, at the start of the Left Quiet Zone
             local h = hbox({ code:sub(1,1) })
-            h.width = SILE.length()
+            h.width = SILE.types.length()
             -- First 6-digit sequence is at 11X LQZ + 3X guard = 14X
             -- We add a 0.5X displacement from the normal guard (a bar)
             -- while the central bar starts with a space).
             SILE.call("kern", { width = 14.5 * X })
             SILE.call("kern", { width = deltaFontWidth * X })
             h = hbox({ code:sub(2,7) }) -- first sequence
-            h.width = SILE.length()
+            h.width = SILE.types.length()
             -- Second 6-digit sequence is further at 6*7X digits + 5X guard = 47X
             -- to which we remove the previous 0.5X displacement.
             -- Substract an additional 0.5X displacement from the central guard
@@ -264,15 +266,15 @@ function package:registerCommands ()
             -- hence 46X...
             SILE.call("kern", { width = 46 * X })
             h = hbox({ code:sub(8,13) }) -- last sequence
-            h.width = SILE.length()
+            h.width = SILE.types.length()
             SILE.call("kern", { width = -deltaFontWidth * X })
             -- End marker is at 6*7X + 3X guard + 7X RQZ = 52X
             -- Corrected by the above displacement, hence 52.5X
-            local l = SILE.length((52.5 - SILE.scratch.ean13.computed.width) * X)
+            local l = SILE.types.length((52.5 - SILE.scratch.ean13.computed.width) * X)
             SILE.call("kern", { width = l })
             if not addon then
               h = hbox({ ">" }) -- closing bracket, aligned to the end of the Right Quiet Zone
-              h.width = SILE.length()
+              h.width = SILE.types.length()
             end
             SILE.call("kern", { width = (SILE.scratch.ean13.computed.width - 7) * X  })
           end)
@@ -305,9 +307,9 @@ function package:registerCommands ()
     local module = SC[scale]
     if not module then SU.error("Invalid EAN scale (SC0 to SC9): "..scale) end
 
-    local X = SILE.length(module.."mm")
+    local X = SILE.types.length(module.."mm")
     local H = 66.363636364 -- As per the standard, a minimal 21.90mm at standard X
-    local offsetcorr = corr and SILE.length("0.020mm") or SILE.length()
+    local offsetcorr = corr and SILE.types.length("0.020mm") or SILE.types.length()
 
     local pattern
     if #code == 5 then
@@ -347,13 +349,13 @@ function package:registerCommands ()
             SILE.call("kern", { width = -9 * #code * X })
             for i = 1, #code do
               local h = hbox({ code:sub(i,i) }) -- Distribute the digits
-              h.width = SILE.length()
+              h.width = SILE.types.length()
               SILE.call("kern", { width = 9 * X })
             end
-            local l = SILE.length((5 - SILE.scratch.ean13.computed.width) * X)
+            local l = SILE.types.length((5 - SILE.scratch.ean13.computed.width) * X)
             SILE.call("kern", { width = l })
             local h = hbox({ ">" }) -- closing bracket, aligned to the end of the Add-on Right Quiet Zone
-            h.width = SILE.length()
+            h.width = SILE.types.length()
             SILE.call("kern", { width = (SILE.scratch.ean13.computed.width - 5) * X  })
           end)
         end)

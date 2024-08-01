@@ -1,7 +1,9 @@
+rockspec_format = "3.0"
 package = "barcodes.sile"
-version = "dev-1"
+version = "1.2.0-1"
 source = {
   url = "git+https://github.com/Omikhleia/barcodes.sile.git",
+  tag = "v1.2.0",
 }
 description = {
   summary = "Barcodes package for the SILE typesetting system.",
@@ -14,6 +16,7 @@ description = {
 }
 dependencies = {
   "lua >= 5.1",
+  "silex.sile >= 0.6.0, < 1.0",
 }
 build = {
   type = "builtin",

@@ -5,7 +5,7 @@ package._name = "barcodes"
 
 function package:_init (_)
   base._init(self)
-  self.class:loadPackage("barcodes.ean13")
+  self:loadPackage("barcodes.ean13")
 end
 
 package.documentation = [[

@@ -40,5 +40,5 @@ A readable version of the documentation is included in the User Manual for the [
 
 ## License
 
-All SILE-related code and samples in this repository are released under the GNU General Public License v3.0, (c) 2022-2025 Omikhleia.
+All SILE-related code and samples in this repository are released under the MIT license, (c) 2022-2025 Omikhleia.
 

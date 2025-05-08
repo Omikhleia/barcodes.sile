@@ -10,7 +10,7 @@ description = {
     suitable for an ISBN (or ISSN, etc.)
   ]],
   homepage = "https://github.com/Omikhleia/barcodes.sile",
-  license = "GPL-3.0",
+  license = "MIT",
 }
 dependencies = {
   "lua >= 5.1",
